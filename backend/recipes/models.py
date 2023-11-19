@@ -1,7 +1,7 @@
+from colorfield.fields import ColorField
+from django.core.validators import MinValueValidator
 from django.db import models
 from users.models import User
-from django.core.validators import MinValueValidator
-from colorfield.fields import ColorField
 
 MAX_NAME_LENGTH = 200
 MAX_COLOR_LENGTH = 7

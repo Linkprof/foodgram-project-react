@@ -2,18 +2,11 @@ import base64
 
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from recipes.models import (Favorite, Ingredient, IngredientsList, Recipes,
+                            ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
 from users.models import Subscribe, User
-from recipes.models import (
-    Favorite,
-    Recipes,
-    Ingredient,
-    IngredientsList,
-    ShoppingCart,
-    Tag,
-    )
 
 MIN_COOK_TIME = 1
 
