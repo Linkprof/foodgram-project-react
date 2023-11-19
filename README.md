@@ -1,3 +1,4 @@
-# Адрес сервера - foodgramforme.ddns.net
-# Админка - admin@admin.ru
-# Пароль - adminparol123
+# Foodgram
+### Адрес сервера - foodgramforme.ddns.net
+### Админка - admin@admin.ru
+### Пароль - adminparol123
