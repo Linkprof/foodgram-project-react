@@ -10,7 +10,7 @@ services:
     image: postgres:13.10
     env_file: .env
     volumes:
-      - pg_data: /var/lib/postgresql/data
+      - pg_data:/tmp/
   backend:
     image: linkprof/foodgram_backend-1
     env_file: .env
