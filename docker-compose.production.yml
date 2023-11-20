@@ -6,7 +6,7 @@ volumes:
   media:
 
 services:
-  db:
+  db-1:
     image: postgres:13.10
     env_file: .env
     volumes:
@@ -18,7 +18,7 @@ services:
       - static:/static/
       - media:/app/media/
     depends_on:
-      - db
+      - db-1
   frontend:
     env_file: .env
     image: linkprof/foodgram_frontend
@@ -35,4 +35,3 @@ services:
       - 8000:80
     depends_on:
       - backend
-      
