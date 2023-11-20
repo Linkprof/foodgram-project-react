@@ -12,7 +12,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    image: linkprof/foodgram_backend-1
+    build: ./backend/
     env_file: .env
     volumes:
       - static:/static/
@@ -21,12 +21,12 @@ services:
       - db
   frontend:
     env_file: .env
-    image: linkprof/foodgram_frontend-1
+    build: ./frontend/
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
   gateway:
-    image: linkprof/foodgram_gateway-1
+    build: ./gateway/
     env_file: .env
     volumes:
       - static:/static
