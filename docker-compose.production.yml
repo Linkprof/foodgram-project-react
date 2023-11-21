@@ -12,7 +12,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    image: linkprof/foodgram_backend
+    image: linkprof/foodgram-backend
     env_file: .env
     volumes:
       - static:/static/
@@ -21,16 +21,19 @@ services:
       - db
   frontend:
     env_file: .env
-    image: linkprof/foodgram_frontend
+    image: linkprof/foodgram-frontend
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
   gateway:
-    image: linkprof/foodgram_gateway
+    image: linkprof/foodgram-nginx
     env_file: .env
     volumes:
-      - static:/static
-      - media:/app/media/
+      - static:/var/html/static/
+      - media:/var/html/media/
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../frontend/build:/usr/share/nginx/html/
+      - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
     ports:
       - 8000:80
     depends_on:
