@@ -17,6 +17,7 @@ services:
     volumes:
       - static:/static/
       - media:/app/media/
+      - redoc:/app/api/docs/
     depends_on:
       - db
   frontend:
@@ -25,6 +26,7 @@ services:
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
+      - ../frontend/:/app/result_build/
   gateway:
     image: linkprof/foodgram-nginx
     env_file: .env
@@ -35,6 +37,6 @@ services:
       - ./frontend/build:/usr/share/nginx/html/
       - ./docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
     ports:
-      - 8000:80
+      - "8000:80"
     depends_on:
       - backend
