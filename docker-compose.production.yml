@@ -31,6 +31,8 @@ services:
     volumes:
       - static:/static
       - media:/media
+      - foodgram_static_value:/var/html/static/
+      - foodgram_media_value:/var/html/media/
     ports:
       - 6000:80
     depends_on:
