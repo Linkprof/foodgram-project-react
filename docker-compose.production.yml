@@ -39,7 +39,7 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs
       - redoc:/usr/share/nginx/api/docs/
     ports:
-      - 80:80
+      - 8000:80
     depends_on:
       - frontend
       - backend
