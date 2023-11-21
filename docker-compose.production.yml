@@ -4,7 +4,6 @@ volumes:
   pg_data:
   static:
   media:
-  redoc:
 
 services:
   db:
@@ -18,7 +17,6 @@ services:
     volumes:
       - static:/static/
       - media:/app/media/
-      - redoc:/app/api/docs/
     depends_on:
       - db
   frontend:
@@ -32,12 +30,8 @@ services:
   gateway:
     image: linkprof/foodgram-nginx
     volumes:
-      - static:/var/html/static/
-      - media:/var/html/media/
-      - ./nginx.conf:/etc/nginx/conf.d
-      - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs
-      - redoc:/usr/share/nginx/api/docs/
+      - static:/static
+      - media:/app/media
     ports:
       - 80:80
     depends_on:
