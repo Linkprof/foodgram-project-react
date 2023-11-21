@@ -30,7 +30,7 @@ services:
     depends_on:
       - backend
   gateway:
-    image: nginx:1.19.3
+    image: linkprof/foodgram-nginx
     volumes:
       - static:/var/html/static/
       - media:/var/html/media/
@@ -39,7 +39,7 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs
       - redoc:/usr/share/nginx/api/docs/
     ports:
-      - 8000:80
+      - 80:80
     depends_on:
       - frontend
       - backend
