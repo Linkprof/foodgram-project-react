@@ -190,8 +190,3 @@ class UserSubscribeViewSet(UserViewSet):
             many=True
         )
         return self.get_paginated_response(serializer.data)
-
-    def get_permissions(self):
-        if self.action == 'me':
-            self.permission_classes = (IsAuthenticated,)
-        return super().get_permissions()
