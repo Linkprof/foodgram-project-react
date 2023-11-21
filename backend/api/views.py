@@ -144,6 +144,11 @@ class UserSubscribeViewSet(UserViewSet):
     pagination_class = RecipePagination
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+    @action(["get"], detail=False)
+    def me(self, request, *args, **kwargs):
+        self.get_object = self.get_instance
+        return self.retrieve(request, *args, **kwargs)
+
     @action(
         detail=True,
         methods=['POST', 'DELETE']
