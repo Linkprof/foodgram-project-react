@@ -36,6 +36,6 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
     ports:
-      - 8000:80
+      - 80:80
     depends_on:
       - frontend
