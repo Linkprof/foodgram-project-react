@@ -29,8 +29,8 @@ services:
     image: linkprof/foodgram-nginx
     env_file: .env
     volumes:
-      - static:/var/html/static/
-      - media:/var/html/media/
+      - static:/static
+      - media:/media
     ports:
       - 6000:80
     depends_on:
