@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
-from recipes.models import (Favorite, Ingredient, IngredientsList, Recipes,
+
+from recipes.models import (Favorite, Ingredient, IngredientsInRecipe, Recipes,
                             ShoppingCart, Tag)
 
 
@@ -20,7 +21,7 @@ class IngredientRecipeForm(BaseInlineFormSet):
 
 
 class IngredientRecipeInLine(admin.TabularInline):
-    model = IngredientsList
+    model = IngredientsInRecipe
     min_num = 1
     formset = IngredientRecipeForm
 

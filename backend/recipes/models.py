@@ -1,6 +1,7 @@
 from colorfield.fields import ColorField
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from users.models import User
 
 MAX_NAME_LENGTH = 200
@@ -69,7 +70,7 @@ class Recipes(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         related_name='recipes',
-        through='recipes.IngredientsList',
+        through='recipes.IngredientsInRecipe',
         verbose_name='Ингредиенты'
     )
     image = models.ImageField(
@@ -96,7 +97,7 @@ class Recipes(models.Model):
         ordering = ('-pub_date',)
 
 
-class IngredientsList(models.Model):
+class IngredientsInRecipe(models.Model):
     recipe = models.ForeignKey(
         Recipes,
         on_delete=models.CASCADE,

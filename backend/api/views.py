@@ -1,20 +1,22 @@
-from api.filters import IngredientFilter, RecipeFilter
-from api.pagination import RecipePagination
-from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (CustomUserSerializer, FavoriteSerializer,
-                             IngredientSerializer, RecipeCreateSerializer,
-                             RecipeSerializer, ShoppingListSerializer,
-                             SubscribeSerializer, TagSerializer)
 from django.db.models import Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet
-from recipes.models import Ingredient, IngredientsList, Recipes, Tag
+from djoser.views import UserViewSet as BaseUserViewSet
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from api.filters import IngredientFilter, RecipeFilter
+from api.pagination import RecipePagination
+from api.permissions import IsAuthorOrReadOnly
+from api.serializers import (FavoriteSerializer, IngredientSerializer,
+                             RecipeCreateSerializer, RecipeSerializer,
+                             ShoppingListSerializer, SubscribeSerializer,
+                             TagSerializer, UserSerializer,)
+from recipes.models import (Ingredient, IngredientsInRecipe,
+                            Recipes, Tag)
 from users.models import Subscribe, User
 
 
@@ -98,8 +100,11 @@ class RecipesViewSet(viewsets.ModelViewSet):
         elif request.method == 'DELETE':
             return self.delete_fav_shop(request, pk, FavoriteSerializer)
 
-    @action(methods=['POST', 'DELETE'], detail=True,
-            permission_classes=(permissions.IsAuthenticatedOrReadOnly,))
+    @action(
+        methods=['POST', 'DELETE'],
+        detail=True,
+        permission_classes=(permissions.IsAuthenticatedOrReadOnly,)
+    )
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.create_fav_shop(request, pk, ShoppingListSerializer)
@@ -114,7 +119,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         if request.user.is_anonymous:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        ingredients = (IngredientsList.objects.filter(
+        ingredients = (IngredientsInRecipe.objects.filter(
             recipe__shopping_cart__user=request.user
         ).order_by('ingredients__name').values(
             'ingredients__name', 'ingredients__measurement_unit'
@@ -138,15 +143,20 @@ class RecipesViewSet(viewsets.ModelViewSet):
         return response
 
 
-class UserSubscribeViewSet(UserViewSet):
+class UserViewSet(BaseUserViewSet):
     queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = UserSerializer
     pagination_class = RecipePagination
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
+    def get_permissions(self):
+        if self.action == 'me':
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
     @action(
         detail=True,
-        methods=['POST', 'DELETE']
+        methods=['POST', 'DELETE'],
     )
     def subscribe(self, request, id):
         user = request.user

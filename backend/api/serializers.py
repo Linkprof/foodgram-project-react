@@ -1,12 +1,15 @@
 import base64
 
 from django.core.files.base import ContentFile
-from djoser.serializers import UserCreateSerializer, UserSerializer
-from recipes.models import (Favorite, Ingredient, IngredientsList, Recipes,
-                            ShoppingCart, Tag)
+from djoser.serializers import (
+    UserCreateSerializer as BaseUserCreateSerializer,
+    UserSerializer as BaseUserSerializer)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from users.models import Subscribe, User
+
+from recipes.models import (Favorite, Ingredient, IngredientsInRecipe,
+                            Recipes, ShoppingCart, Tag)
+from users.models import User
 
 MIN_COOK_TIME = 1
 
@@ -20,7 +23,7 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-class CreateUserSerializer(UserCreateSerializer):
+class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta:
         model = User
         fields = [
@@ -33,7 +36,7 @@ class CreateUserSerializer(UserCreateSerializer):
         ]
 
 
-class CustomUserSerializer(UserSerializer):
+class UserSerializer(BaseUserSerializer):
     is_subscribed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -48,10 +51,10 @@ class CustomUserSerializer(UserSerializer):
         ]
 
     def get_is_subscribed(self, object):
-        user = self.context.get('request').user
+        user = self.context['request'].user
         if user.is_anonymous:
             return False
-        return Subscribe.objects.filter(user=user, author=object.id).exists()
+        return user.authors.filter(id=object.id).exists()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -66,7 +69,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'measurement_unit',
+            'measurement_unit'
         ]
 
 
@@ -79,7 +82,7 @@ class IngredientListSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = IngredientsList
+        model = IngredientsInRecipe
         fields = [
             'id',
             'name',
@@ -89,7 +92,7 @@ class IngredientListSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    author = CustomUserSerializer(read_only=True)
+    author = UserSerializer(read_only=True)
     tags = TagSerializer(many=True)
     ingredients = IngredientListSerializer(
         read_only=True,
@@ -132,7 +135,7 @@ class RecipeAddList(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
 
     class Meta:
-        model = IngredientsList
+        model = IngredientsInRecipe
         fields = [
             'id',
             'amount'
@@ -212,8 +215,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create_ingredient(self, ingredients_list, recipe):
-        IngredientsList.objects.bulk_create(
-            IngredientsList(
+        IngredientsInRecipe.objects.bulk_create(
+            IngredientsInRecipe(
                 ingredients=ingredient['id'],
                 recipe=recipe,
                 amount=ingredient['amount']
@@ -236,7 +239,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 'Поле "tags" обязательно для обновления!'
             )
         tags = validated_data.pop('tags')
-        IngredientsList.objects.filter(recipe=instance).delete()
+        instance.ingredient.all().delete()
         instance.tags.set(tags)
         self.create_ingredient(ingredients, instance)
         return super().update(instance, validated_data)
@@ -295,7 +298,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return Subscribe.objects.filter(user=user, author=object.id).exists()
+        return object.followers.filter(user=user).exists()
 
     def get_recipes_count(self, object):
         return object.recipes.count()
