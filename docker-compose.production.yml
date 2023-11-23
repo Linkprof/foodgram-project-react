@@ -23,7 +23,6 @@ services:
   frontend:
     env_file: .env
     image: linkprof/foodgram-frontend
-    command: cp -r /app/build/. /static/
     volumes:
       - static_frontend:/app/result_build/
   gateway:
