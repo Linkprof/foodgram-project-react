@@ -35,6 +35,6 @@ services:
       - static:/static_django/
       - media:/media/
     ports:
-      - 6000:80
+      - 8000:80
     depends_on:
       - backend
