@@ -14,7 +14,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: linkprof/foodgram_backend
+    image: linkprof/foodgram-backend
     env_file: .env
     depends_on:
       - db
@@ -25,13 +25,13 @@ services:
 
   frontend:
     env_file: .env
-    image: linkprof/foodgram_frontend
+    image: linkprof/foodgram-frontend
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/frontend_static
 
   nginx:
-    image: linkprof/foodgram_gateway
+    image: linkprof/foodgram-gateway
     depends_on:
       - backend
     ports:
