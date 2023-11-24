@@ -18,17 +18,17 @@ services:
     env_file: .env
     depends_on:
       - db
+      - frontend
     volumes:
-      - static:/collected_static
-      - media:/media
+      - backend_static:/app/static
+      - media:/app/media/
       - ./docs:/usr/share/nginx/html/docs
 
   frontend:
     env_file: .env
     image: linkprof/foodgram-frontend
-    command: cp -r /app/build/. /frontend_static/
     volumes:
-      - static:/frontend_static
+      - static:/app/result_build/build/
 
   nginx:
     image: linkprof/foodgram-gateway
@@ -38,6 +38,6 @@ services:
       - "9000:80"
     volumes:
       - static:/usr/share/nginx/html/
-      - static:/collected_static
-      - media:/media
+      - backend_static:/app/static/
+      - media:/app/media/
       - ./docs:/usr/share/nginx/html/docs
