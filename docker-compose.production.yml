@@ -37,7 +37,7 @@ services:
       - "9000:80"
     volumes:
       - static:/static_django/
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/conf.d
       - media:/media/
       - ./docs:/usr/share/nginx/html/api/docs
       - static_frontend:/static_frontend/
