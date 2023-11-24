@@ -64,7 +64,7 @@ jobs:
         with:
           context: ./nginx/
           push: true
-          tags: linkprof/foodgram-nginx:latest
+          tags: linkprof/foodgram-gateway:latest
     
   deploy:
     runs-on: ubuntu-latest
