@@ -19,7 +19,7 @@ services:
     depends_on:
       - db
     volumes:
-      - static:/backend_static
+      - static:/collected_static
       - media:/media
       - ./docs:/usr/share/nginx/html/docs
 
@@ -37,6 +37,7 @@ services:
     ports:
       - "9000:80"
     volumes:
-      - static:/static
+      - static:/usr/share/nginx/html/
+      - static:/collected_static
       - media:/media
       - ./docs:/usr/share/nginx/html/docs
