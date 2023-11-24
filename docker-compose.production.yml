@@ -20,7 +20,7 @@ services:
       - db
       - frontend
     volumes:
-      - backend_static:/app/static
+      - backend_static:/backend_static/
       - media:/app/media/
       - ./docs:/usr/share/nginx/html/docs
 
@@ -38,6 +38,6 @@ services:
       - "9000:80"
     volumes:
       - static:/usr/share/nginx/html/
-      - backend_static:/app/static/
+      - backend_static:/backend_static/
       - media:/app/media/
       - ./docs:/usr/share/nginx/html/docs
