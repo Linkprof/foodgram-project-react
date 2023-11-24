@@ -15,24 +15,23 @@ services:
     image: linkprof/foodgram-backend
     env_file: .env
     volumes:
-      - static:/app/static
-      - media:/app/media
+      - static:/static
+      - media:/media
     depends_on:
       - db
   frontend:
+    env_file: .env
     image: linkprof/foodgram-frontend
+    command: cp -r /app/build/. /static/
     volumes:
-      - ../frontend/:/app/result_build/
+      - static:/static
   gateway:
-    image: nginx:1.19.3
+    image: linkprof/foodgram-nginx
     env_file: .env
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
-      - static:/app/static
-      - media:/app/media
+      - static:/static
+      - media:/media
     ports:
-      - 8080:80
+      - 6000:80
     depends_on:
       - backend
