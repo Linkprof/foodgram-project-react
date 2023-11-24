@@ -4,7 +4,6 @@ on: push
 
 jobs:
   build_and_push_to_docker_hub:
-    if: ${{ github.event_name == 'push' }} && ${{ github.ref == 'refs/heads/master' }}
     name: Push Docker image to DockerHub
     runs-on: ubuntu-latest
     needs: tests
@@ -37,8 +36,6 @@ jobs:
           tags: linkprof/foodgram_frontend:latest
 
   deploy:
-    if: ${{ github.event_name == 'push' }} && ${{ github.ref == 'refs/heads/master' }}
-    name: Deploy to Yandex.Cloud
     runs-on: ubuntu-latest
     needs:
       - build_and_push_to_docker_hub
