@@ -32,6 +32,7 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static:/app/static
       - media:/app/media
+    ports:
       - 8080:80
     depends_on:
       - backend
