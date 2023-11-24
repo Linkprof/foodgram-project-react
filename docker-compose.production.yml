@@ -17,7 +17,7 @@ services:
     env_file: .env
     volumes:
       - static:/app/static_django/
-      - media:/media
+      - media:/media/
     depends_on:
       - db
   frontend:
@@ -27,7 +27,7 @@ services:
   gateway:
     image: nginx:1.19.3
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - static:/static_django/
