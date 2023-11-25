@@ -3,12 +3,19 @@ import base64
 from django.core.files.base import ContentFile
 from djoser.serializers import (
     UserCreateSerializer as BaseUserCreateSerializer,
-    UserSerializer as BaseUserSerializer)
+    UserSerializer as BaseUserSerializer,
+)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from recipes.models import (Favorite, Ingredient, IngredientsInRecipe,
-                            Recipes, ShoppingCart, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientsInRecipe,
+    Recipes,
+    ShoppingCart,
+    Tag
+)
 from users.models import User
 
 MIN_COOK_TIME = 1
@@ -18,8 +25,10 @@ class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+            data = ContentFile(
+                base64.b64decode(imgstr),
+                name='temp.' + format.split('/')[-1],
+            )
         return super().to_internal_value(data)
 
 
@@ -54,7 +63,7 @@ class UserSerializer(BaseUserSerializer):
         user = self.context['request'].user
         if user.is_anonymous:
             return False
-        return user.authors.filter(id=object.id).exists()
+        return user.authors.filter(pk=object.pk).exists()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -172,9 +181,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ]
 
     def to_representation(self, instance):
-        return RecipeSerializer(instance, context={
-            'request': self.context.get('request')
-        }).data
+        return RecipeSerializer(
+            instance,
+            context={'request': self.context.get('request')},
+        ).data
 
     def validate(self, attrs):
         ingredients = attrs.get('ingredients')
@@ -182,9 +192,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Выберите хотя бы 1 ингредиент!'
             )
-        unique_ingredients = []
-        for ingredient in ingredients:
-            unique_ingredients.append(ingredient.get('id'))
+        unique_ingredients = [
+            ingredient.get('id') for ingredient in ingredients
+        ]
         if len(unique_ingredients) != len(set(unique_ingredients)):
             raise ValidationError(
                 {'error': 'Ингредиенты не должны повторяться'}
@@ -194,11 +204,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def validate_tags(self, tags):
-        unique_tags = []
         if not tags:
             raise serializers.ValidationError(
                 'Выберите хотя бы 1 тег!'
             )
+        unique_tags = []
         for tag in tags:
             if tag in unique_tags:
                 raise serializers.ValidationError(
@@ -275,7 +285,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
+        fields = [
             'email',
             'id',
             'username',
@@ -284,7 +294,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'is_subscribed',
             'recipes',
             'recipes_count',
-        )
+        ]
 
     def get_recipes(self, object):
         request = self.context.get('request')
