@@ -39,16 +39,22 @@ class RecipeAdmin(admin.ModelAdmin):
         'text',
         'author',
         'cooking_time',
-        'pub_date'
+        'pub_date',
+        'in_favorites',
     )
-    list_editable = ('author', 'name', 'text')
-    search_fields = ('name', 'author')
+    list_editable = ('name', 'text')
+    search_fields = ('name', 'author__username')
+    list_filter = ('author', 'name', 'tags',)
     inlines = (IngredientRecipeInLine,)
+
+    def in_favorites(self, obj):
+        return obj.favorites.count()
 
 
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
     list_editable = ('name', 'measurement_unit')
+    list_filter = ('name',)
     search_fields = ('name', 'measurement_unit')
 
 
@@ -61,13 +67,14 @@ class TagAdmin(admin.ModelAdmin):
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe')
     list_editable = ('user', 'recipe')
-    search_fields = ('user', 'recipe')
+    search_fields = ('user__username', 'recipe__name')
 
 
 class ShoppingListAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe')
     list_editable = ('user', 'recipe')
-    search_fields = ('user', 'recipe')
+    list_filter = ('recipe',)
+    search_fields = ('user__username', 'recipe__name')
 
 
 admin.site.register(Recipes, RecipeAdmin)

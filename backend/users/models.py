@@ -71,13 +71,13 @@ class User(AbstractUser):
 class Subscribe(models.Model):
     user = models.ForeignKey(
         User,
-        related_name='followers',
+        related_name='follower',
         on_delete=models.CASCADE,
         verbose_name='Подписчик'
     )
     author = models.ForeignKey(
         User,
-        related_name='authors',
+        related_name='author',
         on_delete=models.CASCADE,
         verbose_name='Автор'
     )
@@ -93,7 +93,7 @@ class Subscribe(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.user} подписан на {self.author}'
+        return self.user, self.author
 
     def clean(self):
         if self.user == self.author:

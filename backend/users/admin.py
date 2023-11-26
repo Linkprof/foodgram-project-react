@@ -24,5 +24,5 @@ class Subscribe(admin.ModelAdmin):
         'user',
         'author'
     )
-    search_fields = ('user', 'author')
+    search_fields = ('user__username', 'author__username')
     list_filter = ('user', 'author')

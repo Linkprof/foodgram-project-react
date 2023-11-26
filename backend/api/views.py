@@ -58,13 +58,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
         serializer = RecipeCreateSerializer(
             data=request.data, context={'request': request}
         )
-        serializer.is_valid(raise_exception=True)
-        recipe = serializer.save()
-        return Response(
-            RecipeSerializer(
-                recipe, context={'request': request}
-            ).data, status=status.HTTP_201_CREATED
-        )
+        if serializer.is_valid(raise_exception=True):
+            recipe = serializer.save()
+            return Response(
+                RecipeSerializer(
+                    recipe, context={'request': request}
+                ).data, status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -203,7 +204,7 @@ class UserViewSet(BaseUserViewSet):
         permission_classes=(permissions.IsAuthenticated,),
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(authors__user=request.user)
+        queryset = User.objects.filter(author__user=request.user)
         serializer = SubscribeSerializer(
             self.paginate_queryset(queryset),
             context={'request': request},
